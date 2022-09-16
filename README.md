@@ -2,6 +2,13 @@
 どっかのソースコードコピペして、改造したものです。<br>
 アルゴリズムをちょっとくらい考えたんですが、やっぱりめんどくさかったのでコピペして改造することにしました。（´・ω・｀）
 
+## インストール
+```
+$ sudo apt install libncurses5-dev libncursesw5-dev ncurses-doc
+$ gcc main.c -o tetris -lncurses
+$ ./tetris
+```
+
 ## 参考にさせていただいたもの
 [テトリス](https://ja.wikipedia.org/wiki/%E3%83%86%E3%83%88%E3%83%AA%E3%82%B9)<br>
 [【C言語】ncursesの使い方【ゲーム，テトリス，ブロック崩し】](https://hiroyukichishiro.com/ncurses-in-c-language/?PageSpeed=noscript)<br>
