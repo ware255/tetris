@@ -266,12 +266,18 @@ char minoShapes[MINO_TYPE_MAX][MINO_ANGLE_MAX][MINO_WIDTH][MINO_HEIGHT] =
     }
 };
 
+void end_display(int *score) {
+    clear();
+    printf("\nGAME OVER!!!\n\n");
+    printf("スコア: %d\n\n", *score);
+}
+
 void display() {
     // write displayBuffer
     memcpy(displayBuffer, field, sizeof(field));
 
-    for (int i = 0; i < MINO_HEIGHT; ++i) {
-        for (int j = 0; j < MINO_WIDTH; ++j) {
+    for (int i = 0; i < MINO_HEIGHT; i++) {
+        for (int j = 0; j < MINO_WIDTH; j++) {
             displayBuffer[minoY + i][minoX + j] |= minoShapes[minoType][minoAngle][i][j];
         }
     }
@@ -279,8 +285,8 @@ void display() {
     // display block on console
     clear();
 
-    for (int i = 0; i < FIELD_HEIGHT; ++i) {
-        for (int j = 0; j < FIELD_WIDTH; ++j) {
+    for (int i = 0; i < FIELD_HEIGHT; i++) {
+        for (int j = 0; j < FIELD_WIDTH; j++) {
             if (1 == displayBuffer[i][j]) {
                 printw("##");
             }
@@ -293,8 +299,8 @@ void display() {
 }
 
 bool isHit(int argMinoX, int argMinoY, int argMinoType, int argMinoAngle) {
-    for (int i = 0; i < MINO_HEIGHT; ++i) {
-        for (int j = 0; j < MINO_WIDTH; ++j) {
+    for (int i = 0; i < MINO_HEIGHT; i++) {
+        for (int j = 0; j < MINO_WIDTH; j++) {
             if (minoShapes[argMinoType][argMinoAngle][i][j] && field[argMinoY + i][argMinoX + j]) {
                 return true;
             }
@@ -326,9 +332,15 @@ void resetMino() {
  
 int main(int argc, char *argv[]) {
     if (argc > 1) {
-        printf("引数いらないです。^^;\n");
+        printf("遊び方説明:\n");
+        printf("AキーとDキーで横移動\n");
+        printf("Sキーで落下速度加速\n");
+        printf("Spaceキーで回転\n");
+        printf("Qキーで途中で終了\n");
         return 1;
     }
+
+    /* ここらへんの初期が重要 */
     initscr();
     noecho();
     cbreak();
@@ -336,6 +348,8 @@ int main(int argc, char *argv[]) {
     timeout(0);
 
     int key;
+    int tmp   = 0;
+    int score = 0;
 
     // create wall and bottom
     for (int i = 0; i < FIELD_HEIGHT; ++i) {
@@ -388,9 +402,9 @@ int main(int argc, char *argv[]) {
                 }
 
                 // erase block
-                for (int i = 0; i < FIELD_HEIGHT - 1; ++i) {
+                for (int i = 0; i < FIELD_HEIGHT - 1; i++) {
                     bool isLineFilled = true;
-                    for (int j = 1; j < FIELD_WIDTH - 1; ++j) {
+                    for (int j = 1; j < FIELD_WIDTH - 1; j++) {
                         if (1 != field[i][j]) {
                             isLineFilled = false;
                         }
@@ -401,8 +415,12 @@ int main(int argc, char *argv[]) {
                             memcpy(field[j], field[j - 1], FIELD_WIDTH);
                         }
                     }
+                    score += 10;
                 }
                 resetMino();
+                if (isHit(minoX, minoY - 1, minoType, minoAngle)) {
+                    break;
+                }
             }
             else {
                 ++minoY;
@@ -410,10 +428,11 @@ int main(int argc, char *argv[]) {
 
             display();
         }
-        usleep(50000);
+        /* 60fps */
+        usleep(60000);
     }
-    getch();
     endwin();
+    end_display(&score);
 
     return 0;
 }
