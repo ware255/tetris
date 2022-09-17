@@ -3,6 +3,7 @@
 #include <time.h>
 #include <string.h>
 #include <unistd.h>
+#include <SDL/SDL_mixer.h>
 #include <ncurses.h>
 
 #define FIELD_WIDTH  12
@@ -309,25 +310,24 @@ bool isHit(int argMinoX, int argMinoY, int argMinoType, int argMinoAngle) {
     return false;
 }
 
-long xorshift128(long *l) { 
-    static long x = 123456789;
-    static long y = 362436069;
-    static long z = 521288629;
-    static long w;
-    long t;
-    w = *l;
+unsigned int xorshift128(unsigned int l) { 
+    static unsigned int x = 123456789;
+    static unsigned int y = 362436069;
+    static unsigned int z = 521288629;
+    static unsigned int w;
+    unsigned int t;
+    w = l;
 
     t = x ^ (x << 11);
     x = y; y = z; z = w;
-    return w = (w ^ (w >> 19)) ^ (t ^ (t >> 8)); 
+    return w = (w ^ (w >> 19)) ^ (t ^ (t >> 8));
 }
 
 void resetMino() {
-    long k = time(NULL);
     minoX = 5;
     minoY = 0;
-    minoType = xorshift128(&k) % MINO_TYPE_MAX;
-    minoAngle = xorshift128(&k) % MINO_ANGLE_MAX;
+    minoType = xorshift128((unsigned int)time(NULL)) % MINO_TYPE_MAX;
+    minoAngle = xorshift128((unsigned int)time(NULL)) % MINO_ANGLE_MAX;
 }
  
 int main(int argc, char *argv[]) {
@@ -361,6 +361,16 @@ int main(int argc, char *argv[]) {
         field[FIELD_HEIGHT - 1][i] = 1;
     }
 
+    if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 1, 4096) < 0) {
+        printf("Error inesperado");
+        return 0;
+    }
+    Mix_Init(0);
+
+    Mix_Music *music;
+    music = Mix_LoadMUS("audio.mp3");
+    Mix_PlayMusic(music, -1);
+
     resetMino();
     time_t t = time(NULL);
     while (1) {
@@ -386,8 +396,9 @@ int main(int argc, char *argv[]) {
             }
             break;
         case 'q':
+            Mix_HaltMusic();
             endwin();
-            return 1;
+            return 0;
         }
         display();
 
@@ -431,6 +442,7 @@ int main(int argc, char *argv[]) {
         /* 60fps */
         usleep(60000);
     }
+    Mix_HaltMusic();
     endwin();
     end_display(&score);
 
