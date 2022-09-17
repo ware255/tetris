@@ -4,10 +4,10 @@
 
 ## インストール
 ```
-$ sudo apt install libncurses5-dev libncursesw5-dev ncurses-doc
+$ sudo apt install libncurses5-dev libncursesw5-dev ncurses-doc libsdl-mixer1.2-dev
 $ git clone https://github.com/ware255/tetris.git
 $ cd tetris
-$ gcc main.c -o tetris -lncurses
+$ gcc main.c -o tetris -lncurses -lSDL_mixer
 $ ./tetris
 ```
 
