@@ -15,6 +15,11 @@ $ ./tetris
 引数を適当につけて実行させると遊び方がわかります。<br>
 例 `$ ./tetris --help`
 
+<!--
+## 見た目
+![](https://~~~.拡張子)
+-->
+
 ## 参考にさせていただいたもの
 [テトリス](https://ja.wikipedia.org/wiki/%E3%83%86%E3%83%88%E3%83%AA%E3%82%B9)<br>
 [【C言語】ncursesの使い方【ゲーム，テトリス，ブロック崩し】](https://hiroyukichishiro.com/ncurses-in-c-language/?PageSpeed=noscript)<br>
