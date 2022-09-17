@@ -5,6 +5,8 @@
 ## インストール
 ```
 $ sudo apt install libncurses5-dev libncursesw5-dev ncurses-doc
+$ git clone https://github.com/ware255/tetris.git
+$ cd tetris
 $ gcc main.c -o tetris -lncurses
 $ ./tetris
 ```
