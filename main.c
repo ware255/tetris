@@ -335,7 +335,8 @@ int main(int argc, char *argv[]) {
         printf("遊び方説明:\n");
         printf("AキーとDキーで横移動\n");
         printf("Sキーで落下速度加速\n");
-        printf("Spaceキーで回転\n");
+        printf("Wキーで回転\n");
+        printf("Spaceキーで下まで移動\n");
         printf("Qキーで途中で終了\n");
         return 1;
     }
@@ -390,9 +391,19 @@ int main(int argc, char *argv[]) {
                 ++minoX;
             }
             break;
-        case 0x20:
+        case 'w':
             if (!isHit(minoX, minoY, minoType, (minoAngle + 1) % MINO_ANGLE_MAX)) {
                 minoAngle = (minoAngle + 1) % MINO_ANGLE_MAX;
+            }
+            break;
+        case 0x20:
+            for (;;) {
+                if (!isHit(minoX, minoY + 1, minoType, minoAngle)) {
+                    ++minoY;
+                }
+                else if (isHit(minoX, minoY + 1, minoType, minoAngle)) {
+                    break;
+                }
             }
             break;
         case 'q':
