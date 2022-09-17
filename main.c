@@ -351,6 +351,7 @@ int main(int argc, char *argv[]) {
     int key;
     int tmp   = 0;
     int score = 0;
+    int inver = 0;
 
     // create wall and bottom
     for (int i = 0; i < FIELD_HEIGHT; ++i) {
@@ -373,8 +374,52 @@ int main(int argc, char *argv[]) {
     Mix_PlayMusic(music, -1);
 
     resetMino();
-    time_t t = time(NULL);
+
+    clock_t start_clock;
+    clock_t last_clock = clock();
+
     while (1) {
+        start_clock = clock();
+        if (start_clock >= last_clock + 10000 - inver) {
+            last_clock = start_clock;
+
+            if (isHit(minoX, minoY + 1, minoType, minoAngle)) {
+                for (int i = 0; i < MINO_HEIGHT; ++i) {
+                    for (int j = 0; j < MINO_WIDTH; ++j) {
+                        field[minoY + i][minoX + j] |= minoShapes[minoType][minoAngle][i][j];
+                    }
+                }
+
+                // erase block
+                for (int i = 0; i < FIELD_HEIGHT - 1; i++) {
+                    bool isLineFilled = true;
+                    for (int j = 1; j < FIELD_WIDTH - 1; j++) {
+                        if (1 != field[i][j]) {
+                            isLineFilled = false;
+                        }
+                    }
+
+                    if (true == isLineFilled) {
+                        for (int j = i; j > 0; --j) {
+                            memcpy(field[j], field[j - 1], FIELD_WIDTH);
+                        }
+                    }
+                    score += 10;
+                }
+                resetMino();
+                if (isHit(minoX, minoY - 1, minoType, minoAngle)) {
+                    break;
+                }
+            }
+            else {
+                ++minoY;
+            }
+
+            display();
+
+            inver += 2;
+        }
+
         switch (getch()) {
         case 's':
             if (!isHit(minoX, minoY + 1, minoType, minoAngle)) {
@@ -413,46 +458,10 @@ int main(int argc, char *argv[]) {
         }
         display();
 
-        if (time(NULL) != t) {
-            t = time(NULL);
-
-            if (isHit(minoX, minoY + 1, minoType, minoAngle)) {
-                for (int i = 0; i < MINO_HEIGHT; ++i) {
-                    for (int j = 0; j < MINO_WIDTH; ++j) {
-                        field[minoY + i][minoX + j] |= minoShapes[minoType][minoAngle][i][j];
-                    }
-                }
-
-                // erase block
-                for (int i = 0; i < FIELD_HEIGHT - 1; i++) {
-                    bool isLineFilled = true;
-                    for (int j = 1; j < FIELD_WIDTH - 1; j++) {
-                        if (1 != field[i][j]) {
-                            isLineFilled = false;
-                        }
-                    }
-
-                    if (true == isLineFilled) {
-                        for (int j = i; j > 0; --j) {
-                            memcpy(field[j], field[j - 1], FIELD_WIDTH);
-                        }
-                    }
-                    score += 10;
-                }
-                resetMino();
-                if (isHit(minoX, minoY - 1, minoType, minoAngle)) {
-                    break;
-                }
-            }
-            else {
-                ++minoY;
-            }
-
-            display();
-        }
         /* 60fps */
         usleep(60000);
     }
+
     Mix_HaltMusic();
     endwin();
     end_display(&score);
