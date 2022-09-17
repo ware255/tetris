@@ -453,6 +453,8 @@ int main(int argc, char *argv[]) {
             break;
         case 'q':
             Mix_HaltMusic();
+            Mix_FreeMusic(music);
+            Mix_CloseAudio();
             endwin();
             return 0;
         }
@@ -463,6 +465,8 @@ int main(int argc, char *argv[]) {
     }
 
     Mix_HaltMusic();
+    Mix_FreeMusic(music);
+    Mix_CloseAudio();
     endwin();
     end_display(&score);
 
