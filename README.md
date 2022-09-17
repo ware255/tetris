@@ -21,3 +21,4 @@ $ ./tetris
 [ncurses](http://kis-lab.com/serikashiki/man/ncurses.html)<br>
 [curses による端末制御](https://www.kushiro-ct.ac.jp/yanagawa/ex-2017/2-game/01.html)<br>
 [ゲームプログラミング：C++でテトリスを作ってみた](https://qiita.com/Chomolungma/items/52bd8b133b747cb603e7)<br>
+[SDL プログラミング](http://netadm.iss.tokushima-u.ac.jp/soft/dev/SDL.pdf)<br>
