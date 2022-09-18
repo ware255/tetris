@@ -417,7 +417,7 @@ int main(int argc, char *argv[]) {
 
             display();
 
-            inver += 2;
+            inver += 4;
         }
 
         switch (getch()) {
