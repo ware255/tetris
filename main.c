@@ -324,7 +324,7 @@ unsigned int xorshift128(unsigned int l) {
 }
 
 void resetMino() {
-    minoX = 5;
+    minoX = 4;
     minoY = 0;
     minoType = xorshift128((unsigned int)time(NULL)) % MINO_TYPE_MAX;
     minoAngle = xorshift128((unsigned int)time(NULL)) % MINO_ANGLE_MAX;
@@ -348,10 +348,12 @@ int main(int argc, char *argv[]) {
     refresh();
     timeout(0);
 
-    int key;
+    int key, tmp_;
     int tmp   = 0;
     int score = 0;
     int inver = 0;
+    
+    tmp_ = 0;
 
     // create wall and bottom
     for (int i = 0; i < FIELD_HEIGHT; ++i) {
@@ -363,7 +365,7 @@ int main(int argc, char *argv[]) {
         field[FIELD_HEIGHT - 1][i] = 1;
     }
 
-    if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 1, 4096) < 0) {
+    if(Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 2, 1024) < 0) {
         printf("Error inesperado");
         return 0;
     }
@@ -371,6 +373,7 @@ int main(int argc, char *argv[]) {
 
     Mix_Music *music;
     music = Mix_LoadMUS("audio.mp3");
+    Mix_VolumeMusic(-1);
     Mix_PlayMusic(music, -1);
 
     resetMino();
@@ -452,12 +455,9 @@ int main(int argc, char *argv[]) {
             }
             break;
         case 'q':
-            Mix_HaltMusic();
-            Mix_FreeMusic(music);
-            Mix_CloseAudio();
-            endwin();
-            return 0;
+            tmp_ = 1;
         }
+        if (tmp_ == 1) break;
         display();
 
         /* 60fps */
